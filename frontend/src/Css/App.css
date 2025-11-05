@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
+  list-style: none;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@layer base {
+  body {
+    @apply bg-gray-950;
+  }
+
+  .form-group label {
+    @apply absolute left-5 text-[18px] text-slate-500 font-normal;
+  }
+
+  #username:not(:placeholder-shown)+label,
+  #username:focus+label {
+    @apply left-2.5 -translate-y-6 text-sm text-slate-50 bg-slate-900/70 px-1;
+  }
+
+  #email:not(:placeholder-shown)+label,
+  #email:focus+label {
+    @apply left-2.5 -translate-y-6 text-sm text-slate-50 bg-slate-900/70 px-1;
+  }
+
+  #password:not(:placeholder-shown)+label,
+  #password:focus+label {
+    @apply left-2.5 -translate-y-6 text-sm text-slate-50 bg-slate-900/70 px-1;
+  }
+
+  #confPassword:not(:placeholder-shown)+label,
+  #confPassword:focus+label {
+    @apply left-2.5 -translate-y-6 text-sm text-slate-50 bg-slate-900/70 px-1;
+  }
+}

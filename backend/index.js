@@ -1,5 +1,5 @@
-import express  from "express";
-import cors from "cors"
+import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import db from "./config/db.js";
@@ -7,30 +7,29 @@ import router from "./router/routes.js";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 
-dotenv.config()
+dotenv.config();
 
 const app = express();
+app.use(cookieParser());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:5173",
+  })
+);
 
-
-( async() => {
-    await db.sync();
-})();
-
-app.use(session({
+app.use(
+  session({
     secret: process.env.SESS_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
-        secure: 'auto'
-    }
-}))
-app.use(cors({
-    credentials: true,
-    origin: 'http://localhost:5173'
-}))
-app.use(express.json())
-app.use(bodyParser.json())
-app.use(router)
-app.use(cookieParser())
+      secure: "auto",
+    },
+  })
+);
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(router);
 
-app.listen(process.env.APP_PORT, () => console.log('Server up and running!!'));
+app.listen(process.env.APP_PORT, () => console.log("Server up and running!!"));

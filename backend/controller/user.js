@@ -67,7 +67,8 @@ export const UpdateUsers = async (req, res) => {
     const { username, email, password, profile } = req.body;
 
     const users = await Users.findOne({ where: { id: decoded.id } });
-    if (!users) return res.status(404).json({ error: "Users tidak ditemukan!" });
+    if (!users)
+      return res.status(404).json({ error: "Users tidak ditemukan!" });
 
     const hash = password ? await argon2.hash(password) : users.password;
 
@@ -90,7 +91,8 @@ export const DeleteUsers = async (req, res) => {
     const decoded = req.user;
 
     const users = await Users.findOne({ where: { id: decoded.id } });
-    if (!users) return res.status(404).json({ error: "Users tidak ditemukan!" });
+    if (!users)
+      return res.status(404).json({ error: "Users tidak ditemukan!" });
 
     await Users.destroy({ where: { id: decoded.id } });
     res.status(200).json({ message: "Users berhasil dihapus!" });
@@ -114,7 +116,8 @@ export const Register = async (req, res) => {
     const errors = [];
 
     if (existingUser) errors.push("Username atau email sudah digunakan!");
-    if (password !== confPass) errors.push("Password dan konfirmasi tidak sama!");
+    if (password !== confPass)
+      errors.push("Password dan konfirmasi tidak sama!");
 
     const role = allUsers.length > 0 ? "users" : "admin";
     if (errors.length > 0) return res.status(400).json({ error: errors });
@@ -139,7 +142,9 @@ export const Login = async (req, res) => {
     });
 
     if (!users)
-      return res.status(404).json({ error: "Username atau email tidak terdaftar!" });
+      return res
+        .status(404)
+        .json({ error: "Username atau email tidak terdaftar!" });
 
     const match = await argon2.verify(users.password, password);
     if (!match) return res.status(403).json({ error: "Password salah!" });
@@ -171,24 +176,31 @@ export const Login = async (req, res) => {
 /* ============================================
    ME (Optional — pakai header Authorization)
    ============================================ */
-export const Me = async (req, res) => {
+export const Me = (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token)
+    return res.status(401).json({ message: "Belum login, token tidak ada." });
+
   try {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-
-    if (!token) {
-      return res.status(401).json({ message: "Token tidak ditemukan!" });
-    }
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.status(200).json({
-      message: `Selamat datang ${decoded.username}!`,
-      user: decoded,
+    res.json({ user: decoded });
+  } catch (err) {
+    res.status(403).json({ message: "Token tidak valid atau sudah expired." });
+  }
+};
+
+export const Logout = async (req, res) => {
+  try {
+    // Hapus cookie token dari browser
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: false, // ubah ke true kalau sudah pakai HTTPS
+      sameSite: "lax",
     });
+
+    res.status(200).json({ message: "Logout berhasil!" });
   } catch (error) {
-    res.status(403).json({
-      message: "Token tidak valid atau sudah kadaluarsa!",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Gagal logout", error: error.message });
   }
 };
