@@ -1,15 +1,39 @@
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../Context/AuthContext.jsx";
 import Modal from "./Modal.jsx";
+import axios from "axios";
+import notFound from "../assets/not-found.gif";
 
 export default function Navbar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState(false);
-
+  const [search, setSearch] = useState([]);
+  const [searchModal, setsearchModal] = useState(false);
+  const [data, setData] = useState([]);
   const { user, logout } = useAuth();
 
-  console.log("Navbar User:", user);
+  const baseURL = "http://localhost:3000/anime/search";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (search === "") {
+        setData([]);
+        return;
+      }
+      try {
+        const res = await axios.get(`${baseURL}/${search}`);
+        setData(res.data.anime);
+      } catch (error) {
+        if (error.response?.status === 404) {
+          setData([]);
+        } else {
+          console.log(error);
+        }
+      }
+    };
+    fetchData();
+  }, [search]);
   return (
     <>
       {/* NAVBAR */}
@@ -88,6 +112,12 @@ export default function Navbar() {
                 focus:ring-2 focus:ring-indigo-400/40 dark:focus:ring-indigo-500/40
                 transition
               "
+              value={search}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSearch(val);
+                setsearchModal(val.trim() !== "");
+              }}
             />
             <button
               type="submit"
@@ -135,6 +165,16 @@ export default function Navbar() {
               >
                 Settings
               </NavLink>
+              {user && user.role === "admin" ? (
+                <NavLink
+                  to="/Admin/Dashboard"
+                  className="block px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50"
+                >
+                  Dashboard
+                </NavLink>
+              ) : (
+                ""
+              )}
               <hr className="my-1 border-slate-200 dark:border-slate-700" />
               {user ? (
                 <button
@@ -145,7 +185,7 @@ export default function Navbar() {
                 </button>
               ) : (
                 <NavLink
-                  className="w-full text-left px-4 py-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
+                  className="block px-4 py-2 text-slate-50 rounded-bl-lg rounded-br-lg bg-indigo-600 hover:bg-indigo-800 dark:hover:bg-indigo-900"
                   to={"/Auth/Login"}
                 >
                   Login
@@ -270,8 +310,71 @@ export default function Navbar() {
 
       {/* MODAL SEARCHING */}
 
-      <Modal isOpen={true}>
-        <div className="w-auto h-auto flex items-center justify-center flex-col"></div>
+      <Modal isOpen={searchModal}>
+        <div className="w-[400px] h-[400px] flex flex-col p-5">
+          <div className="mb-5">
+            <h1 className="text-lg font-bold">Hasil Pencarian</h1>
+          </div>
+          <div className="flex w-full h-full items-center flex-col gap-3 overflow-scroll">
+            {data && data.length > 0 ? (
+              data.map((anime, index) => (
+                <div className="flex items-center group" key={index}>
+                  <NavLink className="flex items-start gap-3 ">
+                    <div>
+                      <img
+                        src={anime.thumbnail}
+                        alt="One Piece Thumbnail"
+                        className="w-[100px] h-[100px] object-cover rounded-lg"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <h2 className="text-gray-950 font-medium text-2xl">
+                        {anime.judul}
+                      </h2>
+                      <div className="flex flex-wrap gap-2.5">
+                        <span className="text-gray-600 text-md flex items-center justify-center gap-1">
+                          <i className="ri-tv-line"></i> {anime.kualitas}
+                        </span>
+                        <span className="text-gray-600 text-md flex items-center justify-center gap-1">
+                          <i className="ri-star-line"></i> {anime.skor} / 10
+                        </span>
+                        <span className="text-gray-600 text-md flex items-center justify-center gap-1">
+                          <i className="ri-time-line"></i>{" "}
+                          {anime.status || "??"}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          {Array.isArray(JSON.parse(anime.genre)) &&
+                            JSON.parse(anime.genre).map((a, ik) => (
+                              <span
+                                className="text-sm p-1.5 bg-gray-950/90 rounded-sm text-slate-300"
+                                key={ik}
+                              >
+                                {a}
+                              </span>
+                            ))}
+                        </span>
+                      </div>
+                    </div>
+                  </NavLink>
+                </div>
+              ))
+            ) : (
+              <>
+                <div>
+                  <img
+                    src={notFound}
+                    alt="Data Not Found"
+                    className="w-[200px] h-[200px] object-cover"
+                  />
+                  <h2 className="text-center text-indigo-600 text-2xl font-medium">
+                    Data Not Found
+                  </h2>
+                  <p className="text-center mt-5">Anime tidak ditemukan!</p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       </Modal>
 
       {/* END MODAL SEARCHING */}

@@ -1,4 +1,3 @@
-import kungfupanda from "../../../public/kungfupanda.gif";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
@@ -48,14 +47,6 @@ export default function Register() {
         className="w-[90%] bg-white/60 dark:bg-slate-900/70 flex items-center justify-between rounded-lg"
         onSubmit={handleRegister}
       >
-        <div className="w-[50%] flex items-end justify-center relative">
-          <img
-            src={kungfupanda}
-            alt="Kung fu Panda"
-            loading="lazy"
-            className="w-[90%] object-cover translate-y-[34px]"
-          />
-        </div>
         <div className="w-[50%] py-5 flex items-center justify-center flex-col gap-2.5">
           <h2 className="text-[30px] mb-8 text-slate-300">Daftar Akun Baru</h2>
           <div className="form-group w-[70%] h-auto  flex items-center justify-center relative rounded-lg">
@@ -111,7 +102,7 @@ export default function Register() {
           </div>
           <button
             type="submit"
-            className="mt-5 flex items-center justify-center bg-gray-950 rounded-lg text-slate-50 w-[70%] h-11"
+            className="mt-5 flex items-center justify-center bg-linear-to-br to-indigo-600 from-purple-600 rounded-lg text-slate-50 w-[70%] h-11 hover:cursor-pointer hover:to-indigo-800 hover:from-purple-800"
           >
             Buat Akun Baru
           </button>
@@ -121,6 +112,14 @@ export default function Register() {
           >
             Sudah punya akun? Login
           </NavLink>
+        </div>
+        <div className="w-[50%] h-[600px] rounded-tr-lg rounded-br-lg flex p-5 rounded-tl-[100%] justify-center items-end relative flex-col bg-linear-to-br to-indigo-600 from-purple-600 gap-5">
+          <h1 className="w-[80%] text-4xl text-slate-50 items-end justify-end flex font-bold">
+            Welcome to Register Pages
+          </h1>
+          <span className="w-[80%] text-2xl text-slate-300 flex items-end justify-end font-medium">
+            Buat akun baru untuk melanjutkan
+          </span>
         </div>
       </form>
     </div>

@@ -2,6 +2,8 @@ import { Op } from "sequelize";
 import Users from "../models/Usermodel.js";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
+import path from "path";
+import fs from "fs";
 
 /* ============================================
    GET ALL USERS (Tidak perlu token)
@@ -42,7 +44,6 @@ export const getUsersById = async (req, res) => {
 
     const users = await Users.findOne({
       where: { id },
-      attributes: { exclude: ["password"] },
     });
 
     if (!users) {
@@ -63,22 +64,44 @@ export const getUsersById = async (req, res) => {
    ============================================ */
 export const UpdateUsers = async (req, res) => {
   try {
-    const decoded = req.user;
-    const { username, email, password, profile } = req.body;
+    const decoded = req.user; // dari middleware auth JWT
+    const { username, email, password } = req.body;
 
+    // Ambil data user saat ini
     const users = await Users.findOne({ where: { id: decoded.id } });
-    if (!users)
+    if (!users) {
       return res.status(404).json({ error: "Users tidak ditemukan!" });
+    }
 
+    // Hash password baru kalau diubah, kalau tidak pakai yang lama
     const hash = password ? await argon2.hash(password) : users.password;
 
+    // === HANDLE GAMBAR PROFIL ===
+    let newProfile = users.profile;
+
+    if (req.file) {
+      const oldPath = path.join("uploads", users.profile || "");
+      // Hapus gambar lama kalau ada dan file-nya eksis
+      if (users.profile && fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+      newProfile = req.file.filename; // Nama file baru dari multer
+    }
+
+    // Update ke database
     await Users.update(
-      { username, email, password: hash, profile },
+      {
+        username: username || users.username,
+        email: email || users.email,
+        password: hash,
+        profile: newProfile,
+      },
       { where: { id: decoded.id } }
     );
 
     res.status(200).json({ message: "Profil berhasil diubah!" });
   } catch (error) {
+    console.error(error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -137,37 +160,39 @@ export const Register = async (req, res) => {
 export const Login = async (req, res) => {
   try {
     const { userOREmail, password } = req.body;
-    const users = await Users.findOne({
-      where: { [Op.or]: [{ username: userOREmail }, { email: userOREmail }] },
+
+    const user = await Users.findOne({
+      where: {
+        [Op.or]: [{ username: userOREmail }, { email: userOREmail }],
+      },
+    });
+    if (!user) return res.status(404).json({ error: "User tidak ditemukan" });
+
+    const match = await argon2.verify(user.password, password);
+    if (!match) return res.status(400).json({ error: "Password salah" });
+
+    // 🔑 Token hanya berisi id
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
     });
 
-    if (!users)
-      return res
-        .status(404)
-        .json({ error: "Username atau email tidak terdaftar!" });
-
-    const match = await argon2.verify(users.password, password);
-    if (!match) return res.status(403).json({ error: "Password salah!" });
-
-    const token = jwt.sign(
-      {
-        id: users.id,
-        username: users.username,
-        email: users.email,
-        role: users.role,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-
-    // Simpan token ke cookie HTTP-only
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // ubah true kalau HTTPS
-      sameSite: "lax",
+      secure: "auto",
+      sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ message: "Login berhasil!" });
+    res.status(200).json({
+      message: "Login berhasil",
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        profile: user.profile,
+      },
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -176,17 +201,12 @@ export const Login = async (req, res) => {
 /* ============================================
    ME (Optional — pakai header Authorization)
    ============================================ */
-export const Me = (req, res) => {
-  const token = req.cookies.token;
-
-  if (!token)
-    return res.status(401).json({ message: "Belum login, token tidak ada." });
-
+export const Me = async (req, res) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.json({ user: decoded });
-  } catch (err) {
-    res.status(403).json({ message: "Token tidak valid atau sudah expired." });
+    const user = req.user; // sudah diisi oleh verifyToken
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };
 

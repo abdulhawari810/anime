@@ -1,5 +1,5 @@
 @base = http://localhost:3000/
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJraW5nMTExIiwiZW1haWwiOiJraW5nbXJ4MTExQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VycyIsImlhdCI6MTc2MjMyMzgzNiwiZXhwIjoxNzYyNDEwMjM2fQ.ux2TXNo2HidBgnk4N4n0quQU8vAlVBRNl5YB0n48T0o
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzYyNzExMzQ2LCJleHAiOjE3NjI3OTc3NDZ9.ylJj7lxyyTJj3ZpJIATJA7gAy7BK8wQe_4bIWALedNQ
 
 
 ###
@@ -689,3 +689,22 @@ Authorization: Bearer {{token}}
     "360p": "https://desustream.info/dstream/moedesu/hd/v3/index.php?id=OFJYdGNoZmEwaG1MUkRtK2t6NHJXdz09"
   }
 }
+
+
+###
+// create schedule by anime
+POST {{base}}schedule/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "hari": "Minggu",
+  "waktu_rilis": "2025-11-06T22:00:00+07:00"
+}
+
+
+###
+// get all schedule anime
+GET {{base}}schedule
+Content-Type: application/json
+Authorization: Bearer {{token}}

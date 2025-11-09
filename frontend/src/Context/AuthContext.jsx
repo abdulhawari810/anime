@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 // buat context
 const AuthContext = createContext();
@@ -16,13 +17,37 @@ export const AuthProvider = ({ children }) => {
     withCredentials: true, // penting: kirim cookie httpOnly
   });
 
+  axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      // Hindari tampilkan 404 di console
+      if (error.response && error.response.status === 404) {
+        // tidak log ke console
+        return Promise.reject(error);
+      }
+
+      // selain 404 tetap tampil untuk debugging
+      console.error(error);
+      return Promise.reject(error);
+    }
+  );
+
   // ambil data user dari backend
   const fetchUser = async () => {
     try {
-      const res = await axiosInstance.get("/Me");
+      const res = await axiosInstance.get("/Me", {
+        validateStatus: (status) => status < 500, // anggap 404 bukan error
+      });
       setUser(res.data.user);
     } catch (err) {
-      setUser(null);
+      if (err.response?.status === 404) {
+        // jangan tampilkan apa pun, cukup handle state
+        console.log("Login terlebih dahulu!");
+        setUser(null);
+      } else {
+        // tampilkan error lain (bukan 404)
+        console.error(err);
+      }
       setError(err.response?.data?.message || "Gagal memuat data user");
     } finally {
       setLoading(false);
@@ -32,8 +57,11 @@ export const AuthProvider = ({ children }) => {
   // logout
   const logout = async () => {
     try {
-      await axiosInstance.post("/logout");
+      await axiosInstance.post("/logout", {
+        validateStatus: (status) => status < 500, // anggap 404 bukan error
+      });
       setUser(null);
+      toast.success("Logout Berhasil!");
     } catch (err) {
       console.error("Logout gagal:", err);
     }

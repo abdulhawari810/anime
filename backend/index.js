@@ -6,10 +6,15 @@ import db from "./config/db.js";
 import router from "./router/routes.js";
 import session from "express-session";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 dotenv.config();
 
 const app = express();
+
+(async () => {
+  db.sync();
+})();
 app.use(cookieParser());
 app.use(
   cors({
@@ -30,6 +35,7 @@ app.use(
 );
 app.use(express.json());
 app.use(bodyParser.json());
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(router);
 
 app.listen(process.env.APP_PORT, () => console.log("Server up and running!!"));
