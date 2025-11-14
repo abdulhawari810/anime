@@ -25,6 +25,10 @@ const Episode = db.define(
     videoURL: {
       type: DataTypes.TEXT,
     },
+    sampul: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     freezeTableName: true,

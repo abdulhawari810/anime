@@ -24,7 +24,9 @@ import {
 import {
   CreateAllEpisode,
   CreateEpisode,
+  DeleteAllEpisode,
   DeleteEpisode,
+  getEpisodeById,
   UpdateEpisode,
 } from "../controller/episode.js";
 import {
@@ -74,6 +76,7 @@ router.get("/anime/:slug", getAnimeById);
 router.get("/anime/search/:query", getSearchAnime);
 router.get("/Me", verifyToken, Me);
 router.post("/logout", verifyToken, Logout);
+router.get("/episode/:slug/:id", getEpisodeById);
 
 // for admin
 // users controller
@@ -92,6 +95,7 @@ router.post("/episode/:id", verifyToken, verifyAdmin, CreateEpisode);
 router.post("/episodeBatch/:id", verifyToken, verifyAdmin, CreateAllEpisode);
 router.patch("/episode/:id", verifyToken, verifyAdmin, UpdateEpisode);
 router.delete("/episode/:id", verifyToken, verifyAdmin, DeleteEpisode);
+router.delete("/episodeAll/:id", verifyToken, verifyAdmin, DeleteAllEpisode);
 
 // schedule controller
 router.get("/schedule", verifyToken, verifyAdmin, getSchedule);

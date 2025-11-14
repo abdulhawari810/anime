@@ -4,22 +4,36 @@ import { useAuth } from "../Context/AuthContext.jsx";
 import Modal from "./Modal.jsx";
 import axios from "axios";
 import notFound from "../assets/not-found.gif";
+import defaultImage from "../assets/default.png";
+import { Settings, SquareCheck } from "lucide-react";
 
-export default function Navbar() {
+export default function Navbar({ layout }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState(false);
-  const [search, setSearch] = useState([]);
+  const [notif, setnotif] = useState(false);
+  const [subnotif, setsubnotif] = useState(false);
+  const [search, setSearch] = useState("");
   const [searchModal, setsearchModal] = useState(false);
   const [data, setData] = useState([]);
+  const [navItems, setnavItems] = useState([
+    "Home",
+    "Anime",
+    "Jadwal",
+    "MyList",
+  ]);
   const { user, logout } = useAuth();
 
   const baseURL = "http://localhost:3000/anime/search";
+  const base = "http://localhost:3000/users";
 
   useEffect(() => {
     const fetchData = async () => {
       if (search === "") {
         setData([]);
         return;
+      }
+      if (layout && layout === "admin") {
+        setnavItems(["Dashboard", "Users", "Anime", "Laporan"]);
       }
       try {
         const res = await axios.get(`${baseURL}/${search}`);
@@ -68,30 +82,40 @@ export default function Navbar() {
                 Pandanime
               </h1>
               <p className="text-xs text-slate-600 dark:text-slate-400 -mt-0.5">
-                Streaming & Info Anime
+                {layout === "admin" ? "Admin Pages" : "Streaming & Info Anime"}
               </p>
             </div>
           </NavLink>
         </div>
 
         {/* Center: Navigation Links */}
-        <div className="hidden md:flex items-center gap-4">
-          {["Home", "Anime", "Jadwal", "MyList"].map((item) => (
-            <NavLink
-              key={item}
-              to={`/${item === "Home" ? "" : item}`}
-              className={({ isActive }) =>
-                `transition-colors duration-200 px-3 py-2 rounded-md ${
-                  isActive
-                    ? "text-white bg-indigo-600 shadow-md dark:bg-white/10"
-                    : "text-slate-700 dark:text-slate-200 hover:text-white hover:bg-indigo-100 dark:hover:bg-white/5"
-                }`
-              }
-            >
-              {item}
-            </NavLink>
-          ))}
-        </div>
+        {layout === "home" ? (
+          <div className="hidden md:flex items-center gap-4">
+            {navItems.map((item) => (
+              <NavLink
+                key={item}
+                to={`/${
+                  layout === "home"
+                    ? item === "Home"
+                      ? ""
+                      : item
+                    : item === "Laporan"
+                    ? "Admin/Report"
+                    : "Admin/" + item
+                }`}
+                className={({ isActive }) =>
+                  `transition-colors duration-200 px-3 py-2 rounded-md ${
+                    isActive
+                      ? "text-white bg-indigo-600 shadow-md dark:bg-white/10"
+                      : "text-slate-700 dark:text-slate-200 hover:text-white hover:bg-indigo-100 dark:hover:bg-white/5"
+                  }`
+                }
+              >
+                {item}
+              </NavLink>
+            ))}
+          </div>
+        ) : null}
 
         {/* Right: Icons + Search + Profile */}
         <div className="flex items-center gap-3 text-slate-800 dark:text-slate-100 relative">
@@ -128,29 +152,114 @@ export default function Navbar() {
           </form>
 
           {/* Notification */}
-          <button
-            className="p-2 rounded-md hover:bg-slate-200/50 dark:hover:bg-slate-700/40 relative group"
-            aria-label="Notifications"
-          >
-            <i className="ri-notification-3-line text-lg" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-          </button>
+          <div className="relative group flex items-center">
+            <button
+              className={
+                notif
+                  ? "p-2 rounded-full bg-slate-200/50 dark:bg-slate-700/40 relative group"
+                  : "p-2 rounded-full  relative group"
+              }
+              aria-label="Notifications"
+              onClick={() => {
+                setProfile(false);
+                setnotif(!notif);
+              }}
+            >
+              <i className="ri-notification-3-line text-lg" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            </button>
+
+            <div
+              className={
+                notif
+                  ? "absolute top-20 right-0 mt-2 w-[350px] bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200/50 dark:border-slate-700/40  opacity-100 scale-100 pointer-events-auto origin-top-right transition-all duration-300 ease-out"
+                  : "absolute top-20 right-0 mt-2 w-[350px] bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200/50 dark:border-slate-700/40 opacity-0 scale-95 pointer-events-none  origin-top-right transition-all duration-300 ease-out"
+              }
+            >
+              <div className="w-full flex flex-col p-5">
+                <div className="flex justify-between items-center">
+                  <h1 className="text-2xl text-slate-50">Notifikasi</h1>
+                  <div
+                    className="relative flex items-center"
+                    onClick={() => setsubnotif(!subnotif)}
+                  >
+                    <button
+                      className={
+                        subnotif
+                          ? "w-[50px] h-[50px] flex items-center justify-center bg-slate-600 rounded-full text-2xl"
+                          : "w-[50px] h-[50px] flex items-center justify-center  rounded-full text-2xl"
+                      }
+                    >
+                      <i className="ri-more-fill"></i>
+                    </button>
+                    <div
+                      className={
+                        subnotif
+                          ? "absolute w-[300px] top-12 right-0 p-5 mt-2 bg-gray-950 dark:bg-gray-950 rounded-xl shadow-xl border border-slate-200/50 dark:border-slate-700/40  opacity-100 scale-100 pointer-events-auto origin-top-right transition-all duration-300 ease-out gap-5"
+                          : "absolute w-[300px] top-12 right-0 p-5 mt-2 bg-gray-950 dark:bg-gray-950 rounded-xl shadow-xl border border-slate-200/50 dark:border-slate-700/40  opacity-0 scale-95 pointer-events-auto origin-top-right transition-all duration-300 ease-out gap-5"
+                      }
+                    >
+                      <div className="cursor-pointer hover:bg-indigo-500/30 rounded-lg w-full h-11 p-2.5 flex items-center gap-2.5 text-slate-400 hover:text-slate-200">
+                        <SquareCheck className="w-5 h-5" />
+                        <span>Tandai semua sudah dibaca</span>
+                      </div>
+                      <div className="cursor-pointer hover:bg-indigo-500/30 rounded-lg w-full h-11 p-2.5 flex items-center gap-2.5 text-slate-400 hover:text-slate-200 mt-2">
+                        <Settings className="w-5 h-5" />
+                        <span>Pengaturan Notifikasi</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <NavLink
+                to="/Profile"
+                className="block px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50"
+              >
+                Profile
+              </NavLink>
+            </div>
+          </div>
 
           {/* Profile Dropdown (visual only) */}
-          <div className="relative group" onClick={() => setProfile(!profile)}>
+          <div
+            className="relative group flex items-center"
+            onClick={() => {
+              setProfile(!profile);
+              setnotif(false);
+            }}
+          >
             <button
-              className="p-2 rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-700/40"
+              className={
+                profile
+                  ? "p-2 rounded-full bg-slate-200/50 dark:bg-slate-700/40 flex items-center"
+                  : "p-2 rounded-full flex items-center"
+              }
               aria-label="Profile menu"
             >
-              <i className="ri-user-line text-lg" />
+              <img
+                src={
+                  user && user !== null
+                    ? user.profile && user.profile !== "default.png"
+                      ? `${base.replace("/users", "")}/uploads/${user.profile}`
+                      : defaultImage
+                    : defaultImage
+                }
+                alt={user && user !== null ? user.username : defaultImage}
+                className="w-[35px] h-[35px] object-cover rounded-full"
+              />
             </button>
+            <i
+              className={`ri-arrow-down-s-line text-sm ${
+                profile ? "rotate-180" : "rotate-0"
+              }`}
+            ></i>
 
             {/* Dropdown menu */}
             <div
               className={
                 profile
-                  ? "absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200/50 dark:border-slate-700/40  opacity-100 scale-100 pointer-events-auto origin-top-right transition-all duration-300 ease-out"
-                  : "absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200/50 dark:border-slate-700/40 opacity-0 scale-95 pointer-events-none  origin-top-right transition-all duration-300 ease-out"
+                  ? "absolute top-20 right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200/50 dark:border-slate-700/40  opacity-100 scale-100 pointer-events-auto origin-top-right transition-all duration-300 ease-out"
+                  : "absolute top-20 right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200/50 dark:border-slate-700/40 opacity-0 scale-95 pointer-events-none  origin-top-right transition-all duration-300 ease-out"
               }
             >
               <NavLink
@@ -247,10 +356,18 @@ export default function Navbar() {
 
           {/* Links */}
           <nav className="mt-6 flex flex-col gap-1 animate-[fadeIn_0.5s_ease-out]">
-            {["Home", "Anime", "Jadwal", "MyList"].map((item) => (
+            {navItems.map((item) => (
               <NavLink
                 key={item}
-                to={`/${item === "Home" ? "" : item}`}
+                to={`/${
+                  layout === "home"
+                    ? item === "Home"
+                      ? ""
+                      : item
+                    : item === "Laporan"
+                    ? "Admin/Report"
+                    : "Admin/" + item
+                }`}
                 className={({ isActive }) =>
                   `px-3 py-2 rounded-md transition ${
                     isActive
@@ -270,6 +387,12 @@ export default function Navbar() {
               type="search"
               placeholder="Search anime..."
               className="w-full h-10 rounded-full bg-slate-100/80 dark:bg-slate-800/70 px-3 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none"
+              value={search}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSearch(val);
+                setsearchModal(val.trim() !== "");
+              }}
             />
             <button
               className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white"
@@ -296,12 +419,6 @@ export default function Navbar() {
                 Login
               </NavLink>
             )}
-            <NavLink
-              to="/Auth/Register"
-              className="w-full text-center bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white py-2 rounded-md"
-            >
-              Register
-            </NavLink>
           </div>
         </div>
       </aside>
@@ -312,24 +429,41 @@ export default function Navbar() {
 
       <Modal isOpen={searchModal}>
         <div className="w-[400px] h-[400px] flex flex-col p-5">
-          <div className="mb-5">
+          <div className="mb-5 flex items-center justify-between">
             <h1 className="text-lg font-bold">Hasil Pencarian</h1>
+            <span
+              className="cursor-pointer"
+              onClick={() => {
+                setsearchModal(false);
+                setSearch("");
+              }}
+            >
+              <i className="ri-close-line text-3xl text-slate-950"></i>
+            </span>
           </div>
           <div className="flex w-full h-full items-center flex-col gap-3 overflow-scroll">
             {data && data.length > 0 ? (
               data.map((anime, index) => (
                 <div className="flex items-center group" key={index}>
-                  <NavLink className="flex items-start gap-3 ">
+                  <NavLink
+                    className="flex items-start gap-3"
+                    to={`/Anime/Detail/${anime.slug}`}
+                  >
                     <div>
                       <img
                         src={anime.thumbnail}
-                        alt="One Piece Thumbnail"
+                        alt={anime.judul}
                         className="w-[100px] h-[100px] object-cover rounded-lg"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <h2 className="text-gray-950 font-medium text-2xl">
-                        {anime.judul}
+                      <h2
+                        className="text-gray-950 font-medium truncate text-2xl overflow-hidden text-ellipsis"
+                        title={anime.judul}
+                      >
+                        {anime.judul.length > 10
+                          ? anime.judul.substring(0, 7) + "..."
+                          : anime.judul}
                       </h2>
                       <div className="flex flex-wrap gap-2.5">
                         <span className="text-gray-600 text-md flex items-center justify-center gap-1">
@@ -342,16 +476,18 @@ export default function Navbar() {
                           <i className="ri-time-line"></i>{" "}
                           {anime.status || "??"}
                         </span>
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-1 flex-wrap">
                           {Array.isArray(JSON.parse(anime.genre)) &&
-                            JSON.parse(anime.genre).map((a, ik) => (
-                              <span
-                                className="text-sm p-1.5 bg-gray-950/90 rounded-sm text-slate-300"
-                                key={ik}
-                              >
-                                {a}
-                              </span>
-                            ))}
+                            JSON.parse(anime.genre)
+                              .slice(0, 3)
+                              .map((a, ik) => (
+                                <span
+                                  className="text-sm p-1.5 bg-gray-950/90 rounded-sm text-slate-300"
+                                  key={ik}
+                                >
+                                  {a}
+                                </span>
+                              ))}
                         </span>
                       </div>
                     </div>

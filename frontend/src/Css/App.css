@@ -26,7 +26,9 @@
     transition: background-color 5000s ease-in-out 0s;
   }
 
-  ;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
   body {
     @apply bg-gray-950;
@@ -55,4 +57,5 @@
   #confPassword:focus+label {
     @apply left-2.5 -translate-y-6 text-sm text-slate-50 bg-slate-900/70 px-1;
   }
+
 }

@@ -1,4 +1,4 @@
-import { Anime } from "../models/relationship.js";
+import { Anime, Episode } from "../models/relationship.js";
 import slugify from "slugify";
 import { Op } from "sequelize";
 
@@ -61,7 +61,12 @@ export const getAnimeById = async (req, res) => {
     const { slug } = req.params;
     const anime = await Anime.findOne({
       where: {
-        slug: slug,
+        [Op.or]: [{ slug: slug }, { id: slug }],
+      },
+    });
+    const episode = await Episode.findAll({
+      where: {
+        animeID: anime.id,
       },
     });
 
@@ -71,6 +76,7 @@ export const getAnimeById = async (req, res) => {
     res.status(200).json({
       message: "Anime berhasil ditemukan!",
       anime: anime,
+      episode: episode,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -78,29 +84,9 @@ export const getAnimeById = async (req, res) => {
 };
 export const CreateAnime = async (req, res) => {
   try {
-    const {
-      judul,
-      genre,
-      total_eps,
-      kualitas,
-      status,
-      adaptasi,
-      negara,
-      studio,
-      tipe,
-      musim,
-      eksplisit,
-      demografis,
-      rating,
-      deskripsi,
-      skor,
-      peminat,
-      kredit,
-      thumbnail,
-      durasi,
-    } = req.body;
+    const { formData, genre, deskripsi } = req.body;
 
-    const slug = slugify(judul, {
+    const slug = slugify(formData["judul"], {
       lower: true,
       strict: true,
       remove: /[*+~.()'"!:@]/g,
@@ -108,25 +94,25 @@ export const CreateAnime = async (req, res) => {
 
     await Anime.create({
       slug: slug,
-      judul: judul,
+      judul: formData["judul"],
       genre: JSON.stringify(genre),
-      total_eps: total_eps,
-      kualitas: kualitas,
-      status: status,
-      adaptasi: adaptasi,
-      negara: negara,
-      studio: studio,
-      tipe: tipe,
-      musim: musim,
-      eksplisit: eksplisit,
-      demografis: demografis,
-      rating: rating,
+      total_eps: formData["total_eps"],
+      kualitas: formData["kualitas"],
+      status: formData["status"],
+      adaptasi: formData["adaptasi"],
+      negara: formData["negara"],
+      studio: formData["studio"],
+      tipe: formData["tipe"],
+      musim: formData["musim"],
+      eksplisit: formData["eksplisit"] || null,
+      demografis: formData["demografis"] || null,
+      rating: formData["rating"],
       deskripsi: deskripsi,
-      skor: skor,
-      peminat: peminat,
-      kredit: kredit,
-      thumbnail: thumbnail,
-      durasi: durasi,
+      skor: formData["skor"],
+      peminat: formData["peminat"],
+      kredit: formData["kredit"],
+      thumbnail: formData["thumbnail"],
+      durasi: formData["durasi"],
     });
 
     res.status(201).json({

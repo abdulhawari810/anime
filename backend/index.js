@@ -36,6 +36,10 @@ app.use(
 app.use(express.json());
 app.use(bodyParser.json());
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use(
+  "/storage/thumbnail",
+  express.static(path.join(process.cwd(), "storage/thumbnail"))
+);
 app.use(router);
 
 app.listen(process.env.APP_PORT, () => console.log("Server up and running!!"));

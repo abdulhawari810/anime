@@ -12,7 +12,7 @@ const fetcher = async () => {
 
 export default function Carousel() {
   const [index, setIndex] = useState(0);
-  const { data, isLoading, error } = useSWR("anime", fetcher);
+  const { data, isLoading, error } = useSWR("carousel", fetcher);
 
   // Definisikan fungsi di luar kondisi agar selalu sama
   const next = () => {
@@ -60,7 +60,17 @@ export default function Carousel() {
   const current = data[index];
   const nextIndex = (index + 1) % data.length;
   const prevIndex = (index - 1 + data.length) % data.length;
-  const gen = JSON.parse(current.genre);
+  let gen = [];
+  try {
+    if (current?.genre && typeof current.genre === "string") {
+      gen = JSON.parse(current.genre);
+    } else if (Array.isArray(current?.genre)) {
+      gen = current.genre;
+    }
+  } catch (err) {
+    console.error("Gagal parse genre:", err);
+    gen = [];
+  }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-linear-to-b from-[#0f0f1a] to-[#1c1c28] text-white overflow-hidden pb-5">
       {/* Carousel */}
@@ -78,7 +88,7 @@ export default function Carousel() {
         {/* Current */}
         <AnimatePresence mode="wait">
           <NavLink
-            to={`/Anime/Detail/${current.id}`}
+            to={`/Anime/Detail/${current.slug}`}
             className="absolute w-[260px] h-[380px] rounded-2xl object-cover shadow-2xl z-20"
           >
             <motion.img

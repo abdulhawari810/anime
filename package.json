@@ -1,0 +1,23 @@
+{
+  "name": "anime",
+  "version": "1.0.0",
+  "description": "\"# anime\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "back": "start cmd.exe /K \"cd backend && nodemon index.js\"",
+    "front": "cd frontend && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdulhawari810/anime.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/abdulhawari810/anime/issues"
+  },
+  "homepage": "https://github.com/abdulhawari810/anime#readme"
+}

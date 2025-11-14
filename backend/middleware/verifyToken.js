@@ -15,7 +15,7 @@ export const verifyToken = async (req, res, next) => {
 
     // 🧠 Ambil user terkini dari database (bukan dari token)
     const user = await Users.findByPk(decoded.id, {
-      attributes: ["id", "username", "email", "profile"],
+      attributes: ["id", "username", "email", "profile", "role"],
     });
 
     if (!user) {

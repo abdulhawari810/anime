@@ -14,6 +14,7 @@ import MyList from "./Views/Home/MyList.jsx";
 import Anime from "./Views/Home/Anime.jsx";
 import Detail from "./Views/Home/Detail.jsx";
 import Dashboard from "./Views/Admin/Dashboard.jsx";
+import Animes from "./Views/Admin/Anime.jsx";
 import Carousels from "./Views/Admin/Carousel.jsx";
 import Users from "./Views/Admin/Users.jsx";
 import Report from "./Views/Admin/Report.jsx";
@@ -24,6 +25,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 import ProtectedRoute from "./ProtectedRouter/ProtectedRouter.jsx";
 import Carousel from "./Components/CarouselOverlap";
+import Episode from "./Views/Home/Episode.jsx";
 
 const router = createBrowserRouter([
   {
@@ -48,7 +50,11 @@ const router = createBrowserRouter([
       },
       {
         path: "Profile",
-        element: <Profile />,
+        element: (
+          <ProtectedRoute role="users">
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "MyList",
@@ -61,6 +67,10 @@ const router = createBrowserRouter([
       {
         path: "Anime/Detail/:id",
         element: <Detail />,
+      },
+      {
+        path: "Episode/:slug/:id",
+        element: <Episode />,
       },
     ],
   },
@@ -82,7 +92,7 @@ const router = createBrowserRouter([
       },
       {
         path: "Anime",
-        element: <Anime />,
+        element: <Animes />,
       },
       {
         path: "Carousels",
@@ -96,7 +106,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/auth",
+    path: "/Auth",
     element: <Auth />,
     children: [
       {

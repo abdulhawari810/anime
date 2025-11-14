@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import defaultProfile from "../../assets/default.png";
 import { useAuth } from "../../Context/AuthContext";
 import axios from "axios";
@@ -15,6 +15,13 @@ export default function Profile() {
 
   const base = "http://localhost:3000/users";
   const nav = useNavigate();
+
+  // useEffect(() => {
+  //   if (user && user !== null) {
+  //     setusernames(user.username);
+  //     setemail(user.email);
+  //   }
+  // }, [user]);
 
   const handleFileChange = async (e) => {
     const selected = e.target.files?.[0];
@@ -62,7 +69,27 @@ export default function Profile() {
     }
   };
 
-  console.log(user);
+  const handleProfile = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.patch(
+        `${base}/${user && user !== null ? user.id : null}`,
+        {
+          username: usernames,
+          email: emails,
+          password: passwords,
+          profile: profiles,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      toast.success("Profile berhasil diubah!");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className="w-full h-screen px-12">
@@ -79,7 +106,7 @@ export default function Profile() {
                 : null
             }
             alt={user && user !== null ? user.username : "??"}
-            className="rounded-full w-[250px] h-[250px] absolute -bottom-40 border-20 -left-1.5 border-gray-950"
+            className="rounded-full w-[250px] h-[250px] object-cover absolute -bottom-40 border-20 -left-1.5 border-gray-950"
           />
           <form className="absolute text-4xl text-slate-100 -bottom-32 left-44  rounded-full p-4">
             <input
@@ -97,7 +124,7 @@ export default function Profile() {
             </label>
           </form>
         </div>
-        <div className="w-full h-auto flex flex-col relative bg-amber-200">
+        <div className="w-full h-auto flex flex-col relative">
           <div className="absolute top-5 left-64 flex flex-col">
             <h1 className="text-4xl text-slate-100 font-bold">
               {user && user !== null ? user.username : "??"}
@@ -106,6 +133,57 @@ export default function Profile() {
               {user && user !== null ? user.email : "??"}
             </span>
           </div>
+        </div>
+        <div className="w-full h-auto mt-48 justify-center items-center flex pb-10">
+          <form
+            className="w-[50%] flex justify-center gap-10 items-center flex-col py-10 bg-gray-900 rounded-4xl"
+            onSubmit={handleProfile}
+          >
+            <h1 className=" text-center text-slate-100 font-bold text-2xl mb-5">
+              Ubah Profile
+            </h1>
+            <div className="form-group w-[60%] rounded-lg relative flex justify-center items-center">
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder=" "
+                defaultValue={user && user !== null ? user.email : ""}
+                onChange={(e) => setemail(e.target.value)}
+                autoComplete="off"
+                className="rounded-lg h-11 w-full outline-1 outline-slate-500 not-placeholder-shown:outline-slate-50  focus:outline-slate-50 px-5 text-slate-50"
+              />
+              <label htmlFor="email">Alamat Email</label>
+            </div>
+            <div className="form-group w-[60%] rounded-lg relative flex justify-center items-center">
+              <input
+                type="text"
+                name="username"
+                id="username"
+                placeholder=" "
+                defaultValue={user && user !== null ? user.username : ""}
+                autoComplete="off"
+                onChange={(e) => setusernames(e.target.value)}
+                className="rounded-lg h-11 w-full outline-1 outline-slate-500 not-placeholder-shown:outline-slate-50  focus:outline-slate-50 px-5 text-slate-50"
+              />
+              <label htmlFor="username">Username</label>
+            </div>
+            <div className="form-group w-[60%] rounded-lg relative flex justify-center items-center">
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder=" "
+                autoComplete="off"
+                onChange={(e) => setpassword(e.target.value)}
+                className="rounded-lg h-11 w-full outline-1 outline-slate-500 not-placeholder-shown:outline-slate-50  focus:outline-slate-50 px-5 text-slate-50"
+              />
+              <label htmlFor="password">Password</label>
+            </div>
+            <button className="mt-5 flex items-center justify-center hover:cursor-pointer rounded-lg bg-indigo-600 hover:bg-indigo-900 text-slate-50 w-[60%] h-11">
+              Edit Profile
+            </button>
+          </form>
         </div>
       </div>
     </>
