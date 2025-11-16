@@ -1,16 +1,91 @@
-import { Anime, Episode } from "../models/relationship.js";
+import { Anime, Episode, Schedule } from "../models/relationship.js";
 import slugify from "slugify";
-import { Op } from "sequelize";
+import { Op, Sequelize, where } from "sequelize";
+import SqlString from "sqlstring";
 
-export const getAllAnime = async (req, res) => {
+export const AnimeCarousel = async (req, res) => {
   try {
-    const anime = await Anime.findAll();
+    const anime = await Anime.findAll({ limit: 10 });
 
     if (anime.length == 0) {
       return res.status(404).json({
         error: "Anime tidak ditemukan!",
       });
     }
+
+    res.status(200).json({
+      message: "Anime ditemukan!",
+      anime: anime,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+export const getAllAnime = async (req, res) => {
+  const { filter, genre, hari, alphabet } = req.query;
+
+  const safeGenre = SqlString.escape(genre)
+    .replace(/'/g, "")
+    .trim()
+    .toLowerCase();
+  const safeHari = SqlString.escape(hari)
+    .replace(/'/g, "")
+    .trim()
+    .toLowerCase();
+  const safeAlpha = SqlString.escape(alphabet)
+    .replace(/'/g, "")
+    .trim()
+    .toLowerCase();
+
+  const genreCondition = {};
+  const JadwalCondition = [];
+
+  if (safeGenre && safeGenre !== "semua") {
+    genreCondition.genre = {
+      [Op.regexp]: safeGenre,
+    };
+  }
+
+  if (safeAlpha && safeAlpha !== "all") {
+    genreCondition.judul = {
+      [Op.like]: `${safeAlpha}%`,
+    };
+  }
+
+  if (safeHari && safeHari !== "semua") {
+    JadwalCondition.push({
+      model: Schedule,
+      as: "schedule",
+      where: {
+        hari: safeHari,
+      },
+      required: true,
+    });
+  } else {
+    JadwalCondition.push({
+      model: Schedule,
+      as: "schedule",
+      required: false,
+    });
+  }
+
+  // Mapping filter ke order SQL
+  const orderMap = {
+    Semua: ["id", "DESC"],
+    Populer: ["peminat", "DESC"],
+    "Update Terbaru": ["updatedAt", "DESC"],
+    "Rilis Terbaru": ["createdAt", "DESC"],
+  };
+
+  // Jika filter tidak ada di mapping → fallback ke ID DESC
+  const order = [orderMap[filter] || ["id", "DESC"]];
+
+  try {
+    const anime = await Anime.findAll({
+      where: genreCondition,
+      order,
+      include: JadwalCondition,
+    });
 
     res.status(200).json({
       message: "Anime ditemukan!",

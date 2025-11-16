@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@graphland/react-video-player": "^0.1.14",
     "@tailwindcss/vite": "^4.1.16",
     "apexcharts": "^5.3.6",
     "axios": "^1.13.1",

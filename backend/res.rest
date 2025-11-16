@@ -1,5 +1,5 @@
 @base = http://localhost:3000/
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzYzMTMxNzQ4LCJleHAiOjE3NjMyMTgxNDh9.eKYhuqiIjhm8HTySSMa57oVGEAMWFJean6qi9GKykPw
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzYzMjcyMzA4LCJleHAiOjE3NjMzNTg3MDh9.Bu-PHDQK5HFB-03qRHw5_vnHGWfhWYZP0r8PaLL6LY0
 
 
 ###
@@ -1426,14 +1426,53 @@ GET  {{base}}episode/1
 
 ###
 // create schedule by anime
-POST {{base}}schedule/2
+POST {{base}}scheduleAll
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-{
-  "hari": "Minggu",
-  "waktu_rilis": "2025-11-06T22:00:00+07:00"
-}
+[
+  {
+    "hari": "Senin",
+    "jam": "00:20 WIB",
+    "animeID": 6
+  },
+  {
+    "hari": "Senin",
+    "jam": "04:39 WIB",
+    "animeID": 7
+  },
+  {
+    "hari": "Senin",
+    "jam": "10:37 WIB",
+    "animeID": 8
+  },
+  {
+    "hari": "Senin",
+    "jam": "22:42 WIB",
+    "animeID": 9
+  },
+  {
+    "title": "Isekai Quartet 3",
+    "hari": "Senin",
+    "jam": "22:55 WIB",
+    "animeID": 10
+  },
+  {
+    "hari": "Senin",
+    "jam": "22:57 WIB",
+    "animeID": 11
+  },
+  {
+    "hari": "Senin",
+    "jam": "23:02 WIB",
+    "animeID": 12
+  },
+  {
+    "hari": "Senin",
+    "jam": "23:21 WIB",
+    "animeID": 13
+  }
+]
 
 
 ###

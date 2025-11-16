@@ -1,10 +1,10 @@
-import { Anime, Episode } from "../models/relationship.js";
+import { Anime, Episode, WatchAnime } from "../models/relationship.js";
 import { Op } from "sequelize";
 import path from "path";
 import ffmpeg from "fluent-ffmpeg";
 import ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
 import fs from "fs";
-
+import Sequelize from "sequelize";
 /**
  * Fungsi untuk menghapus folder secara rekursif (folder dan isinya).
  * @param {string} folderPath - Path lengkap ke folder yang akan dihapus.
@@ -51,6 +51,11 @@ export const getEpisodeById = async (req, res) => {
         episodeNumber: id,
       },
     });
+    const watchCount = await WatchAnime.count({
+      where: { animeID: slug, episodeID: episode.id },
+    });
+
+    // console.log(watchCount);
     const epsAll = await Episode.findAll({
       where: {
         animeID: slug,
@@ -67,6 +72,7 @@ export const getEpisodeById = async (req, res) => {
       message: "Episode ditemukan",
       episode: episode,
       AllEpisode: epsAll,
+      watchCount: watchCount,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -130,7 +136,7 @@ export const CreateEpisode = async (req, res) => {
         res.status(500).json({ error: "Gagal mengambil thumbnail" });
       })
       .screenshots({
-        count: 1,
+        count: 2,
         timemarks: [5],
         filename: filename,
         folder: thumbnailDIR,

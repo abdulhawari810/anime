@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "back": "start cmd.exe /K \"cd backend && nodemon index.js\"",
+    "back": "cd backend && nodemon index.js",
     "front": "cd frontend && npm run dev"
   },
   "repository": {

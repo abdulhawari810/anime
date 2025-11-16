@@ -1,0 +1,135 @@
+{
+  "monday": [
+    {
+      "title": "Ansatsusha de Aru Ore no Status ga Yuusha yori mo Akiraka ni Tsuyoi no da ga",
+      "image": "https://r2.nyomo.my.id/images/20251020-1760978218-d2ba35db-7300-4509-9f34-325662563003.jpeg",
+      "hari": "Senin",
+      "jam": "23:50 WIB"
+    }
+  ],
+  "tuesday": [],
+  "wednesday": [],
+  "thursday": [
+    {
+      "title": "Taiyou yori mo Mabushii Hoshi",
+      "image": "https://r2.nyomo.my.id/images/20251016-1760632050-c14cee98-45d0-45c2-a25d-c24fd649c271.jpeg",
+      "hari": "Kamis",
+      "jam": "23:55 WIB"
+    }
+  ],
+  "friday": [],
+  "saturday": [
+    {
+      "title": "Fumetsu no Anata e Season 3",
+      "image": "https://r2.nyomo.my.id/images/20251018-1760802675-619efa2a-ba0b-4681-b2d9-2a2ad065b69f.jpeg",
+      "hari": "Sabtu",
+      "jam": "23:07 WIB"
+    },
+    {
+      "title": "Shuumatsu Touring",
+      "image": "https://r2.nyomo.my.id/images/20251018-1760806569-fdbc90b6-6369-479f-927b-a3d11e85a485.jpeg",
+      "hari": "Sabtu",
+      "jam": "23:53 WIB"
+    }
+  ],
+  "sunday": [
+    {
+      "title": "Taiyou yori mo Mabushii Hoshi",
+      "image": "https://r2.nyomo.my.id/images/20251016-1760632050-c14cee98-45d0-45c2-a25d-c24fd649c271.jpeg",
+      "hari": "Kamis",
+      "jam": "23:55 WIB",
+      "animeID": 35
+    },
+    {
+      "title": "Ansatsusha de Aru Ore no Status ga Yuusha yori mo Akiraka ni Tsuyoi no da ga",
+      "image": "https://r2.nyomo.my.id/images/20251020-1760978218-d2ba35db-7300-4509-9f34-325662563003.jpeg",
+      "hari": "Senin",
+      "jam": "23:50 WIB",
+      "animeID": 14
+    },
+    {
+      "title": "Fumetsu no Anata e Season 3",
+      "image": "https://r2.nyomo.my.id/images/20251018-1760802675-619efa2a-ba0b-4681-b2d9-2a2ad065b69f.jpeg",
+      "hari": "Sabtu",
+      "jam": "23:07 WIB",
+      "animeID": 62
+    },
+    {
+      "title": "Shuumatsu Touring",
+      "image": "https://r2.nyomo.my.id/images/20251018-1760806569-fdbc90b6-6369-479f-927b-a3d11e85a485.jpeg",
+      "hari": "Sabtu",
+      "jam": "23:53 WIB",
+      "animeID": 63
+    },
+    {
+      "title": "Delicious Party♡Precure",
+      "image": "https://cdn.myanimelist.net/images/anime/1332/120430l.jpg",
+      "hari": "Minggu",
+      "jam": "19:45 WIB",
+      "animeID": 76
+    },
+    {
+      "title": "Wonderful Precure!",
+      "image": "https://cdn.myanimelist.net/images/anime/1852/140786l.webp",
+      "hari": "Minggu",
+      "jam": "20:13 WIB",
+      "animeID": 77
+    },
+    {
+      "title": "Chanto Suenai Kyuuketsuki-chan",
+      "image": "https://r2.nyomo.my.id/images/20251026-1761486631-1787b51c-cf19-4c8a-9c2b-a4e4df742c19.jpeg",
+      "hari": "Minggu",
+      "jam": "20:47 WIB",
+      "animeID": 78
+    },
+    {
+      "title": "Cool Doji Danshi",
+      "image": "https://cdn.myanimelist.net/images/anime/1123/134677l.jpg",
+      "hari": "Minggu",
+      "jam": "20:54 WIB",
+      "animeID": 79
+    },
+    {
+      "title": "Kikaijikake no Marie",
+      "image": "https://r2.nyomo.my.id/images/20251019-1760882532-14d6d12f-336c-48b5-865b-8530f02c26f8.jpeg",
+      "hari": "Minggu",
+      "jam": "21:36 WIB",
+      "animeID": 80
+    },
+    {
+      "title": "Chichi wa Eiyuu, Haha wa Seirei, Musume no Watashi wa Tenseisha.",
+      "image": "https://r2.nyomo.my.id/images/20251019-1760884277-6f6429ac-1524-4e32-9ab2-8317542dd5a1.jpeg",
+      "hari": "Minggu",
+      "jam": "22:07 WIB",
+      "animeID": 81
+    },
+    {
+      "title": "Alma-chan wa Kazoku ni Naritai",
+      "image": "https://r2.nyomo.my.id/images/20251019-1760885111-b749b140-bc82-4025-85dc-e0e2a02e418a.jpeg",
+      "hari": "Minggu",
+      "jam": "22:12 WIB",
+      "animeID": 82
+    },
+    {
+      "title": "Gachiakuta",
+      "image": "https://r2.nyomo.my.id/images/20250727-1753629614-216c41ed-2469-41f1-b9ea-0bbf91a611d9.jpeg",
+      "hari": "Minggu",
+      "jam": "22:33 WIB",
+      "animeID": 83
+    },
+    {
+      "title": "One Punch Man 3",
+      "image": "https://r2.nyomo.my.id/images/20251026-1761493520-e27e6967-e02c-47a8-8706-a0cdd8b5a5d0.",
+      "hari": "Minggu",
+      "jam": "22:36 WIB",
+      "animeID": 84
+    },
+    {
+      "title": "One Piece",
+      "image": "https://r2.nyomo.my.id/images/20250406-1743955188-db04cbc2-3641-4fd2-b6fe-49352ecf929f.jpeg",
+      "hari": "Minggu",
+      "jam": "23:30 WIB",
+      "animeID": 85
+    }
+  ]
+}

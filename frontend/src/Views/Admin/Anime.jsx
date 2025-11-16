@@ -34,6 +34,7 @@ export default function Animes() {
   const addGenre = () => setGenres([...genres, ""]);
   const [openAdd, setopenAdd] = useState(false);
   const [openEdit, setopenEdit] = useState(false);
+  const [ids, setids] = useState(null);
   const removeGenre = (index) =>
     setGenres(genres.filter((_, i) => i !== index));
   const updateGenre = (index, value) => {
@@ -79,7 +80,10 @@ export default function Animes() {
     return res.data.anime;
   };
 
-  const { data, isLoading, error } = useSWR(`${base}` || "adminAnime", fetch);
+  const { data, isLoading, error } = useSWR(
+    `${ids !== null ? base + "/" + ids : base}`,
+    fetch
+  );
 
   if (isLoading)
     return (
@@ -139,7 +143,11 @@ export default function Animes() {
                 >
                   <button
                     className="absolute top-0 right-0 bg-indigo-600 text-slate-50 rounded-lg p-2.5 w-[50px] h-[50px] flex items-center justify-center hover:bg-indigo-800 cursor-pointer"
-                    onClick={() => setopenEdit(true)}
+                    onClick={() => {
+                      setopenEdit(true);
+                      setids(anime.id);
+                      setGenres(JSON.parse(anime.genre));
+                    }}
                   >
                     <SquarePen className="w-5 h-5" />
                   </button>
@@ -316,7 +324,11 @@ export default function Animes() {
             </h1>
             <button
               className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer hover:bg-slate-800"
-              onClick={() => setopenEdit(false)}
+              onClick={() => {
+                setopenEdit(false);
+                setids(null);
+                setGenres([]);
+              }}
             >
               <CircleX className="w-5 h-5 text-red-500" />
             </button>
@@ -342,12 +354,14 @@ export default function Animes() {
                     type="text"
                     name={field}
                     id={field}
+                    defaultValue={data?.[field] || ""}
                     placeholder=" "
-                    className="peer w-full h-full bg-[#15151f] text-slate-100 px-4 rounded-lg border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-600 transition outline-none"
+                    min={0}
+                    className="peer w-full h-full bg-[#15151f] text-slate-100 px-4 rounded-lg border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-600 not-placeholder-shown:border-indigo-500 not-placeholder-shown:ring-2 not-placeholder-shown:ring-indigo-600 transition outline-none"
                   />
                   <label
                     htmlFor={field}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-gray-500 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-xs peer-focus:text-indigo-500 transition-all peer-placeholder-shown:bg-bg-[#15151f] peer-focus:bg-[#15151f] p-2.5"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm   peer-focus:top-0 peer-not-placeholder-shown:top-0 peer-focus:text-xs peer-focus:text-indigo-500 peer-not-placeholder-shown:text-indigo-500 transition-all peer-not-placeholder-shown:bg-[#15151f] peer-not-placeholder-shown:text-xs peer-focus:bg-[#15151f] p-2.5"
                   >
                     {field.charAt(0).toUpperCase() + field.slice(1)}
                   </label>
@@ -355,7 +369,7 @@ export default function Animes() {
               ))}
 
               {/* Input Genre Dinamis */}
-              <div className="w-full flex flex-col items-center gap-2 mt-3">
+              <div className="w-full flex flex-col items-center gap-5 mt-3">
                 <label className="text-slate-300 text-lg font-semibold">
                   Genre
                 </label>
@@ -368,10 +382,10 @@ export default function Animes() {
                       type="text"
                       name={`genre-${index}`}
                       id={`genre-${index}`}
-                      placeholder="Genre..."
+                      placeholder=" "
                       value={genre}
                       onChange={(e) => updateGenre(index, e.target.value)}
-                      className="w-full bg-[#1e1e29] text-slate-100 px-4 py-2 rounded-lg border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-600 outline-none transition"
+                      className="w-full bg-[#1e1e29] text-slate-100 px-4 py-2 rounded-lg border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-600 not-placeholder-shown:border-indigo-500 not-placeholder-shown:ring-2 not-placeholder-shown:ring-indigo-600 outline-none transition"
                     />
                     {genres.length > 1 && (
                       <button
@@ -405,6 +419,7 @@ export default function Animes() {
                   name="deskripsi"
                   id="deskripsi"
                   rows="4"
+                  defaultValue={data?.deskripsi}
                   placeholder="Tulis deskripsi singkat anime..."
                   className="w-full bg-[#1e1e29] text-slate-100 px-4 py-3 rounded-lg border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-600 outline-none transition resize-none"
                 ></textarea>

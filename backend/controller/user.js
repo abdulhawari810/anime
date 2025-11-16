@@ -180,7 +180,7 @@ export const Login = async (req, res) => {
       httpOnly: true,
       secure: "auto",
       sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 168 * 60 * 60 * 1000,
     });
 
     res.status(200).json({

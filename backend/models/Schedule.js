@@ -6,6 +6,16 @@ const { DataTypes } = Sequelize;
 const Schedule = db.define(
   "jadwal_anime",
   {
+    animeID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Anime id tidak boleh kosong!",
+        },
+      },
+    },
     hari: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -16,13 +26,13 @@ const Schedule = db.define(
         },
       },
     },
-    waktu_rilis: {
-      type: DataTypes.DATE,
+    jam: {
+      type: DataTypes.STRING,
       allowNull: false,
-      validate: {
+      validat: {
         notEmpty: {
           args: true,
-          msg: "Jam Rilis tidak boleh kosong!",
+          msg: "Hari tidak boleh kosong!",
         },
       },
     },

@@ -5,19 +5,35 @@ import { NavLink } from "react-router-dom";
 import axios from "axios";
 import useSWR from "swr";
 import { UsersRound } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Anime() {
-  const [gen, setgen] = useState("");
-  const [alpha, setalpha] = useState("All");
-  const [days, setdays] = useState("");
-  const base = "http://localhost:3000/Anime";
+  const [gen, setgen] = useState(() => {
+    return localStorage.getItem("animeGenre") || "Semua";
+  });
+  const [alpha, setalpha] = useState(() => {
+    return localStorage.getItem("animeAlpha") || "All";
+  });
+  const [days, setdays] = useState(() => {
+    return localStorage.getItem("animeHari") || "Semua";
+  });
+  const [displayedEps, setDisplayedEps] = useState([]); // <-- Episode yang ditampilkan saat ini
+  const [page, setPage] = useState(1); // <-- Halaman saat ini
+  const [limit] = useState(12);
+  const [filter, setFilter] = useState(() => {
+    return localStorage.getItem("animeFilter") || "Semua";
+  });
+  const base = "http://localhost:3000/anime";
 
   const fetch = async (url) => {
     const res = await axios.get(url);
     return res.data.anime;
   };
 
-  const { data, isLoading, error } = useSWR(`${base}`, fetch);
+  const { data, isLoading, error } = useSWR(
+    `${base}?genre=${gen}&filter=${filter}&hari=${days}&alphabet=${alpha}`,
+    fetch
+  );
 
   const alphabet = [
     "All",
@@ -115,6 +131,38 @@ export default function Anime() {
     "Sabtu",
     "Minggu",
   ];
+  useEffect(() => {
+    localStorage.setItem("animeFilter", filter);
+    localStorage.setItem("animeGenre", gen);
+    localStorage.setItem("animeAlpha", alpha);
+    localStorage.setItem("animeHari", days);
+    setDisplayedEps([]);
+    setPage(1);
+  }, [filter, gen, alpha, days]);
+
+  useEffect(() => {
+    setDisplayedEps([]);
+    setPage(1);
+  }, [days, gen, alpha]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    if (page === 1) {
+      // load pertama saat filter berubah
+      setDisplayedEps(data.slice(0, limit));
+    } else {
+      // load more
+      const nextStart = (page - 1) * limit;
+      const nextEnd = nextStart + limit;
+      setDisplayedEps((prev) => [...prev, ...data.slice(nextStart, nextEnd)]);
+    }
+  }, [data, page, limit]);
+
+  const loadMore = () => {
+    if (displayedEps?.length >= data?.length) return;
+    setPage((p) => p + 1);
+  };
 
   if (isLoading)
     return (
@@ -123,7 +171,7 @@ export default function Anime() {
       </div>
     );
 
-  if (error || !data)
+  if (error)
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#0a0a0f] text-red-400 text-xl">
         Gagal memuat video.
@@ -132,7 +180,7 @@ export default function Anime() {
 
   return (
     <div className="w-full min-h-screen bg-[#0a0a0f] text-slate-100 px-10 py-8">
-      <div className="w-full flex flex-col fixed px-10 left-0 z-40 bg-slate-900/70 top-[70px]">
+      <div className="w-full flex flex-col fixed px-10 left-0 z-40 bg-slate-900/70 top-[70px] py-5">
         {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-indigo-500">
@@ -184,7 +232,12 @@ export default function Anime() {
             (btn, i) => (
               <span
                 key={i}
-                className="cursor-pointer px-5 py-3 rounded-xl bg-linear-to-br from-purple-700 to-indigo-700 text-white font-semibold hover:shadow-indigo-500 shadow transition"
+                onClick={() => setFilter(btn)}
+                className={`cursor-pointer px-5 py-3 rounded-xl ${
+                  filter === btn
+                    ? "bg-linear-to-br from-purple-700 to-indigo-700"
+                    : ""
+                } text-white font-semibold hover:shadow-indigo-500 shadow transition`}
               >
                 {btn}
               </span>
@@ -192,11 +245,11 @@ export default function Anime() {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-6 pt-14">
+      <div className="flex flex-col gap-6 pt-24">
         {/* Card Grid */}
         <Card type="wrap">
-          {Array.isArray(data) &&
-            data.map((anime, i) => (
+          {Array.isArray(displayedEps) &&
+            displayedEps.map((anime, i) => (
               <NavLink
                 key={i}
                 to={`/Anime/Detail/${anime.slug}`}
@@ -242,6 +295,33 @@ export default function Anime() {
               </NavLink>
             ))}
         </Card>
+
+        {/* --- Tombol Load More --- */}
+
+        {/* --- Tombol Load More --- */}
+        {data?.length > displayedEps?.length && (
+          <div className="w-full flex justify-center mt-5">
+            <button
+              onClick={loadMore}
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200"
+            >
+              Muat {limit} Episode Lagi
+            </button>
+          </div>
+        )}
+        {/* --- Akhir Tombol Load More --- */}
+
+        {data?.length > 0 && data?.length === displayedEps?.length && (
+          <p className="text-center text-slate-400 mt-5">
+            Semua episode sudah dimuat.
+          </p>
+        )}
+
+        {data?.length === 0 && (
+          <p className="text-center text-slate-400 mt-5">
+            Belum ada episode yang tersedia.
+          </p>
+        )}
       </div>
     </div>
   );
