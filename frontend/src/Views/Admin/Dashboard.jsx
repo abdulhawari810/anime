@@ -126,7 +126,7 @@ class Dashboard extends React.Component {
           ].map((item, i) => (
             <div
               key={i}
-              className={`p-5 bg-gradient-to-br ${item.color} rounded-2xl shadow-lg hover:scale-[1.03] transition-transform`}
+              className={`p-5 bg-linear-to-br ${item.color} rounded-2xl shadow-lg hover:scale-[1.03] transition-transform`}
             >
               <div className="flex justify-between items-center">
                 <div>

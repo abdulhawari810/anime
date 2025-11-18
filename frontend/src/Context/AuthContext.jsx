@@ -10,10 +10,11 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // data user dari backend
   const [loading, setLoading] = useState(true); // status fetch awal
   const [error, setError] = useState(null);
+  const baseAPI = import.meta.env.VITE_base_api;
 
   // konfigurasi axios agar kirim cookie otomatis
   const axiosInstance = axios.create({
-    baseURL: "http://localhost:3000/",
+    baseURL: baseAPI,
     withCredentials: true, // penting: kirim cookie httpOnly
   });
 

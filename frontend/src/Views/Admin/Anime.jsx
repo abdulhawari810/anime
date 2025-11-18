@@ -42,7 +42,7 @@ export default function Animes() {
     newGenres[index] = value;
     setGenres(newGenres);
   };
-  const base = "http://localhost:3000/anime";
+  const base = `${import.meta.env.VITE_base_api}/anime`;
 
   const handleAddAnime = async (e) => {
     e.preventDefault();

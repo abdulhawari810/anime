@@ -23,8 +23,8 @@ export default function Navbar({ layout }) {
   ]);
   const { user, logout } = useAuth();
 
-  const baseURL = "http://localhost:3000/anime/search";
-  const base = "http://localhost:3000/users";
+  const baseURL = `${import.meta.env.VITE_base_api}/anime/search`;
+  const base = `${import.meta.env.VITE_base_api}`;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,13 +54,13 @@ export default function Navbar({ layout }) {
 
       <nav
         className="
-          fixed inset-x-0 top-0 z-50
-          backdrop-blur-md
-          border-b border-slate-200/30 dark:border-slate-700/60
-          bg-white/60 dark:bg-slate-900/70
-          transition-colors duration-300
-          px-4 md:px-10 h-[72px] flex items-center justify-between
-        "
+    fixed inset-x-0 top-0 z-50
+    backdrop-blur-md
+    border-b border-slate-200/30 dark:border-slate-700/60
+    bg-white/60 dark:bg-slate-900/70
+    transition-colors duration-300
+    px-4 md:px-10 h-[72px] flex items-center justify-between
+    "
       >
         {/* Left: Brand + Mobile Button */}
         <div className="flex items-center gap-3">
@@ -121,21 +121,21 @@ export default function Navbar({ layout }) {
         <div className="flex items-center gap-3 text-slate-800 dark:text-slate-100 relative">
           {/* Search Input */}
           <form
-            className="hidden md:flex items-center gap-2 relative"
+            className="hidden md:hidden lg:flex items-center gap-2 relative"
             role="search"
           >
             <input
               type="search"
               placeholder="Search anime..."
               className="
-                w-[300px] h-10 rounded-full
-                bg-slate-100/80 dark:bg-slate-800/70
-                text-slate-900 dark:text-slate-100
-                placeholder:text-slate-500 dark:placeholder:text-slate-400
-                px-4 pr-10 outline-none
-                focus:ring-2 focus:ring-indigo-400/40 dark:focus:ring-indigo-500/40
-                transition
-              "
+    w-[300px] h-10 rounded-full
+    bg-slate-100/80 dark:bg-slate-800/70
+    text-slate-900 dark:text-slate-100
+    placeholder:text-slate-500 dark:placeholder:text-slate-400
+    px-4 pr-10 outline-none
+    focus:ring-2 focus:ring-indigo-400/40 dark:focus:ring-indigo-500/40
+    transition
+    "
               value={search}
               onChange={(e) => {
                 const val = e.target.value;
@@ -150,6 +150,14 @@ export default function Navbar({ layout }) {
               <i className="ri-search-line" />
             </button>
           </form>
+
+          <button
+            className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white lg:hidden"
+            aria-label="Search"
+            onClick={() => setsearchModal(true)}
+          >
+            <i className="ri-search-line" />
+          </button>
 
           {/* Notification */}
           <div className="relative group flex items-center">
@@ -178,7 +186,9 @@ export default function Navbar({ layout }) {
             >
               <div className="w-full flex flex-col p-5">
                 <div className="flex justify-between items-center">
-                  <h1 className="text-2xl text-slate-50">Notifikasi</h1>
+                  <h1 className="lg:text-2xl md:text-2xl text-[18px] text-slate-50">
+                    Notifikasi
+                  </h1>
                   <div
                     className="relative flex items-center"
                     onClick={() => setsubnotif(!subnotif)}
@@ -186,8 +196,8 @@ export default function Navbar({ layout }) {
                     <button
                       className={
                         subnotif
-                          ? "w-[50px] h-[50px] flex items-center justify-center bg-slate-600 rounded-full text-2xl"
-                          : "w-[50px] h-[50px] flex items-center justify-center  rounded-full text-2xl"
+                          ? "lg:w-[50px] md:w-[50px] w-[30px] lg:h-[50px] md:h-[50px] h-[30px] flex items-center justify-center bg-slate-600 rounded-full text-2xl"
+                          : "lg:w-[50px] md:w-[50px] w-[30px] lg:h-[50px] md:h-[50px] h-[30px] flex items-center justify-center  rounded-full text-2xl"
                       }
                     >
                       <i className="ri-more-fill"></i>
@@ -240,9 +250,9 @@ export default function Navbar({ layout }) {
                 src={
                   user && user !== null
                     ? user.profile && user.profile !== "default.png"
-                      ? `${base.replace("/users", "")}/uploads/${user.profile}`
+                      ? `${base}/uploads/${user.profile}`
                       : defaultImage
-                    : defaultImage
+                    : null
                 }
                 alt={user && user !== null ? user.username : defaultImage}
                 className="w-[35px] h-[35px] object-cover rounded-full"
@@ -322,13 +332,13 @@ export default function Navbar({ layout }) {
 
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 w-72 
-          bg-white/60 dark:bg-slate-900/70 
-          backdrop-blur-md border-r border-slate-200/20 dark:border-slate-700/50 
-          transform transition-transform duration-500 ease-[cubic-bezier(0.77,0,0.175,1)]
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          md:hidden
-        `}
+    fixed inset-y-0 left-0 z-50 w-72 
+    bg-white/60 dark:bg-slate-900/70 
+    backdrop-blur-md border-r border-slate-200/20 dark:border-slate-700/50 
+    transform transition-transform duration-500 ease-[cubic-bezier(0.77,0,0.175,1)]
+    ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+    md:hidden
+    `}
       >
         <div className="px-4 py-5">
           {/* Header */}
@@ -382,25 +392,6 @@ export default function Navbar({ layout }) {
           </nav>
 
           {/* Mobile Search */}
-          <form className="mt-6 flex items-center gap-2">
-            <input
-              type="search"
-              placeholder="Search anime..."
-              className="w-full h-10 rounded-full bg-slate-100/80 dark:bg-slate-800/70 px-3 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none"
-              value={search}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSearch(val);
-                setsearchModal(val.trim() !== "");
-              }}
-            />
-            <button
-              className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white"
-              aria-label="Search"
-            >
-              <i className="ri-search-line" />
-            </button>
-          </form>
 
           {/* Auth Buttons */}
           <div className="mt-6 flex flex-col gap-2">
@@ -428,67 +419,111 @@ export default function Navbar({ layout }) {
       {/* MODAL SEARCHING */}
 
       <Modal isOpen={searchModal}>
-        <div className="w-[400px] h-[400px] flex flex-col p-5">
-          <div className="mb-5 flex items-center justify-between">
-            <h1 className="text-lg font-bold">Hasil Pencarian</h1>
+        {/* PERBAIKAN RESPONSIVE 
+    - w-[400px] diubah menjadi:
+    - w-11/12 (sekitar 90% lebar di HP)
+    - max-w-lg (lebar maksimal di layar besar, misal 512px)
+    - h-[400px] diubah menjadi:
+    - max-h-[80vh] (tinggi maksimal 80% dari viewport height, agar tidak melebihi layar)
+    - h-auto (biarkan tingginya menyesuaikan konten)
+    */}
+        <div
+          className="
+    lg:w-full w-[50%] md:w-full h-auto max-h-[80vh] 
+    flex flex-col p-5  bg-gray-950 rounded-xl shadow-2xl
+    "
+          // Catatan: Asumsikan komponen <Modal> Anda menangani
+          // backdrop dan centering, dan div ini adalah konten modalnya.
+        >
+          <form className="mt-6 lg:hidden flex items-center gap-2 mb-5">
+            <input
+              type="search"
+              placeholder="Search anime..."
+              className="w-full h-10 rounded-full bg-slate-100/80 dark:bg-slate-800/70 px-3 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none"
+              value={search}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSearch(val);
+              }}
+            />
+            <button
+              className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white"
+              aria-label="Search"
+            >
+              <i className="ri-search-line" />
+            </button>
+          </form>
+          <div className="mb-5 flex items-center justify-between border-b dark:border-slate-700 pb-3">
+            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              Hasil Pencarian
+            </h1>
             <span
-              className="cursor-pointer"
+              className="cursor-pointer p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition"
               onClick={() => {
                 setsearchModal(false);
                 setSearch("");
               }}
             >
-              <i className="ri-close-line text-3xl text-slate-950"></i>
+              <i className="ri-close-line text-2xl text-slate-950 dark:text-slate-100"></i>
             </span>
           </div>
-          <div className="flex w-full h-full items-center flex-col gap-3 overflow-scroll">
+          <div className="flex w-full sm:w-[500px] h-full items-center flex-col gap-3 overflow-y-auto">
             {data && data.length > 0 ? (
               data.map((anime, index) => (
-                <div className="flex items-center group" key={index}>
+                <div
+                  className="flex w-full sm:w-[500px] items-start group border-b border-slate-200 dark:border-slate-700 pb-3 last:border-b-0 last:pb-0"
+                  key={index}
+                >
                   <NavLink
-                    className="flex items-start gap-3"
+                    className="flex items-start gap-3 w-full"
                     to={`/Anime/Detail/${anime.slug}`}
+                    onClick={() => {
+                      setsearchModal(false);
+                      setSearch("");
+                    }} // Tutup modal saat navigasi
                   >
-                    <div>
+                    <div className="shrink-0">
                       <img
-                        src={anime.thumbnail}
+                        src={anime.thumbnail || defaultImage}
                         alt={anime.judul}
-                        className="w-[100px] h-[100px] object-cover rounded-lg"
+                        // Ubah ukuran gambar agar lebih kompak di modal
+                        className="w-[60px] h-20 object-cover rounded-lg"
                       />
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-full min-w-0">
                       <h2
-                        className="text-gray-950 font-medium truncate text-2xl overflow-hidden text-ellipsis"
+                        className="text-slate-950 dark:text-slate-50 font-medium text-base truncate"
                         title={anime.judul}
                       >
-                        {anime.judul.length > 10
-                          ? anime.judul.substring(0, 7) + "..."
-                          : anime.judul}
+                        {anime.judul}
                       </h2>
-                      <div className="flex flex-wrap gap-2.5">
-                        <span className="text-gray-600 text-md flex items-center justify-center gap-1">
-                          <i className="ri-tv-line"></i> {anime.kualitas}
+                      {/* Tampilkan detail sebagai baris terpisah atau bungkus dalam satu baris */}
+                      <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs mt-1">
+                        <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1">
+                          <i className="ri-star-line text-sm"></i> {anime.skor}{" "}
+                          / 10
                         </span>
-                        <span className="text-gray-600 text-md flex items-center justify-center gap-1">
-                          <i className="ri-star-line"></i> {anime.skor} / 10
-                        </span>
-                        <span className="text-gray-600 text-md flex items-center justify-center gap-1">
-                          <i className="ri-time-line"></i>{" "}
+                        <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1">
+                          <i className="ri-time-line text-sm"></i>{" "}
                           {anime.status || "??"}
                         </span>
-                        <span className="flex items-center gap-1 flex-wrap">
-                          {Array.isArray(JSON.parse(anime.genre)) &&
-                            JSON.parse(anime.genre)
-                              .slice(0, 3)
-                              .map((a, ik) => (
-                                <span
-                                  className="text-sm p-1.5 bg-gray-950/90 rounded-sm text-slate-300"
-                                  key={ik}
-                                >
-                                  {a}
-                                </span>
-                              ))}
+                        <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1">
+                          <i className="ri-tv-line text-sm"></i>{" "}
+                          {anime.kualitas}
                         </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {Array.isArray(JSON.parse(anime.genre)) &&
+                          JSON.parse(anime.genre)
+                            .slice(0, 3)
+                            .map((a, ik) => (
+                              <span
+                                className="text-xs p-1 bg-indigo-600/10 dark:bg-indigo-900/40 rounded-sm text-indigo-600 dark:text-indigo-300"
+                                key={ik}
+                              >
+                                {a}
+                              </span>
+                            ))}
                       </div>
                     </div>
                   </NavLink>
@@ -496,16 +531,19 @@ export default function Navbar({ layout }) {
               ))
             ) : (
               <>
-                <div>
+                {/* Pesan Not Found */}
+                <div className="flex flex-col items-center justify-center h-full py-10">
                   <img
                     src={notFound}
                     alt="Data Not Found"
-                    className="w-[200px] h-[200px] object-cover"
+                    className="w-[150px] h-[150px] object-cover"
                   />
-                  <h2 className="text-center text-indigo-600 text-2xl font-medium">
+                  <h2 className="text-center text-indigo-600 text-xl font-medium mt-4">
                     Data Not Found
                   </h2>
-                  <p className="text-center mt-5">Anime tidak ditemukan!</p>
+                  <p className="text-center mt-2 text-slate-600 dark:text-slate-400">
+                    Anime tidak ditemukan! Coba kata kunci lain.
+                  </p>
                 </div>
               </>
             )}

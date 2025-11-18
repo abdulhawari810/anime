@@ -11,4 +11,9 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
+  server: {
+    allowedHosts: ["981c2690be4d.ngrok-free.app"],
+  },
 });
+
+//cloudflared tunnel --url http://localhost:5173

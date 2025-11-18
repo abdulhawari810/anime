@@ -13,7 +13,7 @@ export default function Profile() {
   const [profiles, setprofile] = useState(null);
   const [preview, setPreview] = useState("");
 
-  const base = "http://localhost:3000/users";
+  const base = `${import.meta.env.VITE_base_api}/users`;
   const nav = useNavigate();
 
   // useEffect(() => {

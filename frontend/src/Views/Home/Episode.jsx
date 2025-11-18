@@ -8,7 +8,7 @@ import { useAuth } from "../../Context/AuthContext";
 
 export default function Episode() {
   const { userId, slug } = useParams();
-  const base = "http://localhost:3000/";
+  const base = import.meta.env.VITE_base_api;
   const { user } = useAuth();
   const [hasWatched, setHasWatched] = useState(false);
   const [eps, setEps] = useState([]);
@@ -19,7 +19,7 @@ export default function Episode() {
 
   const fetcher = async (url) => {
     const res = await axios.get(url);
-    const a = await axios.get(`${base}anime/${slug}`);
+    const a = await axios.get(`${base}/anime/${slug}`);
     setAnime(a.data.anime);
     setEps(res.data.AllEpisode || []);
     setwatchCount(res.data.watchCount);
@@ -28,9 +28,15 @@ export default function Episode() {
   };
 
   const { data, isLoading, error } = useSWR(
-    `${base}episode/${slug}/${userId}`,
+    `${base}/episode/${slug}/${userId}`,
     fetcher
   );
+
+  // useEffect(() => {
+  //   axios.get(`${base}/episode/${slug}/${userId}`).then((res) => {
+  //     console.log("HASIL API:", res.data);
+  //   });
+  // }, []);
 
   useEffect(() => {
     if (!user || !user.id) return;
@@ -41,7 +47,7 @@ export default function Episode() {
 
     const AnimeWatch = async () => {
       await axios.post(
-        `${base}watch`,
+        `${base}/watch`,
         {
           userID: user.id,
           animeID: slug,
@@ -51,11 +57,11 @@ export default function Episode() {
       );
 
       setHasWatched(true); // tandai sudah insert
-      mutate(`${base}episode/${slug}/${userId}`);
+      mutate(`${base}/episode/${slug}/${userId}`);
     };
 
     AnimeWatch();
-  }, [user, data, slug, userId, hasWatched]);
+  }, [user, data, slug, userId]);
   useEffect(() => {
     setHasWatched(false);
   }, [slug, userId]);
@@ -86,7 +92,7 @@ export default function Episode() {
         Gagal memuat video.
       </div>
     );
-  console.log(watchCount);
+  // console.log(data);
   return (
     <div className="p-4 bg-gray-900 min-h-screen text-white">
       <div className="w-full mx-auto flex flex-col lg:flex-row gap-6 px-4">

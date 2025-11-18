@@ -4,7 +4,7 @@ export default function Breadcrumb({ links }) {
   console.log(links[0]);
   return (
     <>
-      <div className="flex items-center gap-1.5 text-[20px]">
+      <div className="flex items-center gap-1.5 lg:text-[20px] md:text-[20px] text-[16px]">
         <NavLink to={"/"} className="hover:text-indigo-600">
           <i className="ri-home-4-line text-2xl"></i>
         </NavLink>

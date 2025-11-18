@@ -28,7 +28,8 @@ export default function Detail() {
   const [displayedEps, setDisplayedEps] = useState([]); // <-- Episode yang ditampilkan saat ini
   const [page, setPage] = useState(1); // <-- Halaman saat ini
   const [limit] = useState(10);
-  const base = "http://localhost:3000/";
+  const base = import.meta.env.VITE_base_api;
+  const [showDesc, setshowDesc] = useState(false);
 
   useEffect(() => {
     if (eps.length > 0) {
@@ -58,7 +59,7 @@ export default function Detail() {
   };
 
   const { data, error, isLoading } = useSWR(
-    `http://localhost:3000/Anime/${id}`,
+    `${import.meta.env.VITE_base_api}/Anime/${id}`,
     fetcher
   );
 
@@ -114,25 +115,26 @@ export default function Detail() {
     gen = [];
   }
   return (
-    <div className="p-10  text-slate-50 bg-gray-900 min-h-screen">
-      <div className="full mx-auto">
-        <Breadcrumb links={["Anime", "Detail", data.judul]} />
+    <div className="lg:p-10 md:p-10 p-4 text-slate-50 bg-gray-900 min-h-screen">
+      <div className="w-full mx-auto">
+        <Breadcrumb
+          links={["Anime", "Detail", data?.judul?.substring(0, 20) + "..."]}
+        />
 
         <div className="flex flex-col bg-gray-800 p-6 md:p-10 rounded-xl shadow-2xl mt-6">
-          <div className="flex flex-row">
+          <div className="flex flex-col md:flex-row lg:flex-row">
             {/* Left Column: Thumbnail */}
             <div className="w-full md:w-1/3 flex justify-center mb-6 md:mb-0 md:pr-10">
               <img
                 src={data.thumbnail}
                 alt={data.judul}
-                className="object-cover w-full max-w-xs md:max-w-sm h-auto rounded-lg shadow-lg transform hover:scale-105 transition duration-300"
-                style={{ maxHeight: "500px" }}
+                className="object-contain lg:object-cover md:object-cover w-full max-w-xs md:max-w-sm lg:h-[500px] md:h-[500px] h-[350px] rounded-lg shadow-lg transform hover:scale-105 transition duration-300"
               />
             </div>
 
             {/* Right Column: Details */}
             <div className="w-full md:w-2/3 flex flex-col">
-              <h1 className="text-slate-100 font-extrabold text-4xl lg:text-5xl mb-10">
+              <h1 className="text-slate-100 font-extrabold text-2xl md:text-4xl lg:text-5xl mb-10">
                 {data.judul}
               </h1>
 
@@ -142,7 +144,7 @@ export default function Detail() {
                   <CalendarCheck className="w-5 h-5 text-blue-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Status</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data?.status}
                     </span>
                   </div>
@@ -151,7 +153,7 @@ export default function Detail() {
                   <Calendar className="w-5 h-5 text-red-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Musim</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.musim || "N/A"}
                     </span>
                   </div>
@@ -160,7 +162,7 @@ export default function Detail() {
                   <Clapperboard className="w-5 h-5 text-lime-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Studio</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.studio || "N/A"}
                     </span>
                   </div>
@@ -169,7 +171,7 @@ export default function Detail() {
                   <MapPin className="w-5 h-5 text-green-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Negara</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.negara || "N/A"}
                     </span>
                   </div>
@@ -178,7 +180,7 @@ export default function Detail() {
                   <NotebookPen className="w-5 h-5 text-orange-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Adaptasi</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.adapatasi || "N/A"}
                     </span>
                   </div>
@@ -187,7 +189,7 @@ export default function Detail() {
                   <MonitorPlay className="w-5 h-5 text-indigo-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Kualitas</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.kualitas || "N/A"}
                     </span>
                   </div>
@@ -196,7 +198,7 @@ export default function Detail() {
                   <Clock className="w-5 h-5 text-yellow-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Durasi</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.durasi || "N/A"}
                     </span>
                   </div>
@@ -205,7 +207,7 @@ export default function Detail() {
                   <Tv className="w-5 h-5 text-emerald-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Tipe</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.tipe || "N/A"}
                     </span>
                   </div>
@@ -214,7 +216,7 @@ export default function Detail() {
                   <BookA className="w-5 h-5 text-cyan-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Eksplisit</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.eksplisit || "N/A"}
                     </span>
                   </div>
@@ -223,7 +225,7 @@ export default function Detail() {
                   <ChartNoAxesColumn className="w-5 h-5 text-violet-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Demografis</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.demografis || "N/A"}
                     </span>
                   </div>
@@ -232,7 +234,7 @@ export default function Detail() {
                   <Eye className="w-5 h-5 text-teal-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Peminat</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {Intl.NumberFormat("id-ID", {
                         notation: "compact",
                         maximumFractionDigits: 1,
@@ -244,7 +246,7 @@ export default function Detail() {
                   <Hash className="w-5 h-5 text-yellow-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Total Episode</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.total_eps || "N/A"}
                     </span>
                   </div>
@@ -253,7 +255,7 @@ export default function Detail() {
                   <Star className="w-5 h-5 text-amber-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Rating</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.rating || "N/A"}
                     </span>
                   </div>
@@ -262,7 +264,7 @@ export default function Detail() {
                   <UserPen className="w-5 h-5 text-rose-400 mr-3" />
                   <div>
                     <p className="text-sm text-slate-400">Kredit By</p>
-                    <span className="font-semibold text-lg text-white">
+                    <span className="font-semibold lg:text-lg md:text-lg text-md text-white">
                       {data.kredit || "N/A"}
                     </span>
                   </div>
@@ -270,10 +272,10 @@ export default function Detail() {
               </div>
 
               {/* genre section */}
-              <div className="grid grid-cols-5 gap-5 my-2.5">
+              <div className="grid grid-cols-2 lg:grid-cols-5 gap-5 my-2.5">
                 {gen.map((g, i) => (
                   <span
-                    className="p-5 text-center rounded-lg bg-indigo-600 text-lg"
+                    className="p-5 text-center rounded-lg bg-indigo-600 lg:text-lg md:text-lg text-md"
                     key={i}
                   >
                     {g}
@@ -289,8 +291,20 @@ export default function Detail() {
               <div
                 // Menghapus gap-2.5 yang mungkin menyebabkan tampilan aneh pada HTML mentah
                 dangerouslySetInnerHTML={{ __html: data.deskripsi }}
-                className="text-slate-300 leading-relaxed space-y-4 text-base"
+                className={`w-full text-slate-300 leading-relaxed space-y-4 text-base ${
+                  showDesc
+                    ? "h-auto overflow-visible"
+                    : "h-[200px] overflow-hidden"
+                }`}
               />
+              <div className="w-full flex items-center justify-center my-5">
+                <span
+                  className="w-[150px] h-11 flex items-center justify-center text-lg bg-indigo-500 text-slate-100 rounded-lg"
+                  onClick={() => setshowDesc(!showDesc)}
+                >
+                  Show More
+                </span>
+              </div>
 
               {/* Genre Section (Optional, if you have this data) */}
               {data.genres && data.genres.length > 0 && (
@@ -320,7 +334,7 @@ export default function Detail() {
                 Daftar Episode
               </h4>
             </div>
-            <div className="w-full grid grid-cols-5 py-5 gap-5">
+            <div className="w-full grid lg:grid-cols-5 md:grid-cols-5 grid-cols-2 py-5 gap-5">
               {Array.isArray(displayedEps) &&
                 displayedEps.map((ep, i) => (
                   <NavLink
@@ -334,15 +348,15 @@ export default function Detail() {
                         11
                       )}/${ep?.sampul}`}
                       alt={ep?.title}
-                      className="w-full h-[200px] object-cover rounded-t-2xl mb-2.5"
+                      className="w-full lg:h-[200px] md:h-[200px] h-[150px] object-cover rounded-t-2xl mb-2.5"
                     />
                     <div className="w-full flex flex-col gap-2 p-2.5">
-                      <h5 className="text-[20px] font-medium">
+                      <h5 className="lg:text-[20px] md:text-[20px] text-[16px] font-medium">
                         {ep?.title
                           ? ep?.title.substring(0, 20) + "..."
                           : ep?.title}
                       </h5>
-                      <span className="mb-2.5">
+                      <span className="lg:mb-2.5 md:mb-2.5 mb-5">
                         Episode {ep?.episodeNumber}
                       </span>
                     </div>

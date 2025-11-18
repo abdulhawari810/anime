@@ -6,7 +6,9 @@ import { NavLink } from "react-router-dom";
 
 // Fetcher SWR
 const fetcher = async () => {
-  const res = await axios.get("http://localhost:3000/anime/Carousel");
+  const res = await axios.get(
+    `${import.meta.env.VITE_base_api}/anime/Carousel`
+  );
   return res.data.anime;
 };
 

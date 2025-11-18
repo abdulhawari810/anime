@@ -9,7 +9,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
 
-  const baseURL = "http://localhost:3000/";
+  const baseURL = import.meta.env.VITE_base_api;
   const nav = useNavigate();
 
   const handleRegister = async (e) => {

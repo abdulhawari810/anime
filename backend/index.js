@@ -15,9 +15,11 @@ const app = express();
 (async () => {
   db.sync();
 })();
+
 app.use(cookieParser());
 app.use(
   cors({
+    //origin: [/\.ngrok-free\.app$/],
     credentials: true,
     origin: "http://localhost:5173",
   })

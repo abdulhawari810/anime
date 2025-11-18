@@ -23,7 +23,7 @@ export default function Anime() {
   const [filter, setFilter] = useState(() => {
     return localStorage.getItem("animeFilter") || "Semua";
   });
-  const base = "http://localhost:3000/anime";
+  const base = `${import.meta.env.VITE_base_api}/anime`;
 
   const fetch = async (url) => {
     const res = await axios.get(url);
@@ -245,7 +245,7 @@ export default function Anime() {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-6 pt-24">
+      <div className="flex flex-col gap-2.5 pt-24">
         {/* Card Grid */}
         <Card type="wrap">
           {Array.isArray(displayedEps) &&
@@ -253,7 +253,7 @@ export default function Anime() {
               <NavLink
                 key={i}
                 to={`/Anime/Detail/${anime.slug}`}
-                className="flex flex-col w-[200px] bg-[#15151f] rounded-2xl  hover:scale-[1.03] hover:shadow-indigo-600 shadow-md transition relative mt-10"
+                className="flex flex-col w-[180px] bg-[#15151f] rounded-2xl  hover:scale-[1.03] hover:shadow-indigo-600 shadow-md transition relative mt-10"
               >
                 <img
                   src={anime.thumbnail}

@@ -176,6 +176,13 @@ export const Login = async (req, res) => {
       expiresIn: "1d",
     });
 
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: true, // WAJIB untuk https (ngrok)
+    //   sameSite: "none", // WAJIB untuk cross-site
+    //   path: "/", // penting
+    // });
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: "auto",

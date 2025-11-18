@@ -1,8 +1,16 @@
-import  { Sequelize }  from "sequelize";
+import Sequelize from "sequelize";
+import dotenv from "dotenv";
+dotenv.config();
 
-const db = new Sequelize('anime','root','', {
-    host: 'localhost',
-    dialect: 'mysql'
-});
+const db = new Sequelize(
+  process.env.APP_DATABASE,
+  process.env.APP_USER,
+  process.env.APP_PASS || "",
+  {
+    host: process.env.APP_HOST,
+    dialect: "mysql",
+    logging: false,
+  }
+);
 
 export default db;

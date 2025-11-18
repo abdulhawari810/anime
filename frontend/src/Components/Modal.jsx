@@ -3,7 +3,7 @@ export default function Modal({ isOpen, onClose, children }) {
 
   return (
     <>
-      <div className="fixed top-[100px] right-5 bg-white w-auto h-auto rounded-lg z-50">
+      <div className="fixed lg:w-[40%] md:w-[50%] lg:h-[50%] right-0 flex items-center justify-end top-20 md:top-[100px] lg:top-[170px] md:right-0 lg:right-0 sm:w-auto px-10 rounded-lg z-50">
         {children}
       </div>
     </>
